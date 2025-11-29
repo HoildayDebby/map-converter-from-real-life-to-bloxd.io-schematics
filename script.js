@@ -1,4 +1,5 @@
 import { GLTFLoader } from "https://threejs.org/examples/jsm/loaders/GLTFLoader.js";
+import { voxelizeModel } from "./voxelizer.js";
 
 const renderer = new THREE.WebGLRenderer({
   canvas: document.getElementById("viewer")
@@ -15,9 +16,12 @@ const light = new THREE.DirectionalLight(0xffffff, 2);
 light.position.set(20, 20, 20);
 scene.add(light);
 
-// LOAD 3D MODEL
+let model;  // store model globally
+
+// LOAD THE MODEL
 const loader = new GLTFLoader();
-loader.load("city.glb", model => {
+loader.load("city.glb", gltf => {
+  model = gltf;
   scene.add(model.scene);
 });
 
@@ -26,11 +30,16 @@ function animate() {
   requestAnimationFrame(animate);
 }
 animate();
-import { voxelizeModel } from "./voxelizer.js";
 
+
+// =============================
+// VOXELIZER / EXPORT SECTION
+// =============================
 document.addEventListener("keydown", e => {
-  if (e.key === "v") {   // press V to voxelize
-    const voxels = voxelizeModel(model.scene, 2);
+  if (e.key === "v") {   // Press V to export
+    if (!model) return alert("Model not loaded yet!");
+
+    const voxels = voxelizeModel(model.scene, 2); // size 2 blocks
     downloadJSON(voxels);
   }
 });
