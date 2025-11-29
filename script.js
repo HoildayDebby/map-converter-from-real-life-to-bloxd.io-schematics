@@ -26,3 +26,20 @@ function animate() {
   requestAnimationFrame(animate);
 }
 animate();
+import { voxelizeModel } from "./voxelizer.js";
+
+document.addEventListener("keydown", e => {
+  if (e.key === "v") {   // press V to voxelize
+    const voxels = voxelizeModel(model.scene, 2);
+    downloadJSON(voxels);
+  }
+});
+
+function downloadJSON(data) {
+  const blob = new Blob([JSON.stringify(data)], {type: "application/json"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "city_bloxd.json";
+  a.click();
+}
